@@ -2,6 +2,8 @@ use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 
+mod sorts;
+use crate::sorts::mergesort::mergesort;
 
 fn main() {
     println!("Hello, mergesort!");
@@ -73,69 +75,4 @@ fn read_vec(real: &mut Vec<i64>)->String{
     return output.to_string();
 }
 
-fn mergesort<T:Ord+Copy>( real: &mut[T] , scratch: &mut[T]){
-//fn mergesort( real: &mut[i32] , scratch: &mut[i32]){
-    if real.len() <=1{
-        return;
-    }
-    assert_eq!(real.len(),scratch.len());
 
-    let halflength = real.len()/2;
-
-    //println!("{:?}",real);
-
-    let realhalf0len;
-    let realhalf1len;
-
-    { //creating a new scope for temporary borrows
-        let mut realhalves = (*real).split_at_mut(halflength);
-        let mut scratchhalves = (*scratch).split_at_mut(halflength);
-
-        mergesort(realhalves.0, scratchhalves.0);
-        mergesort(realhalves.1, scratchhalves.1);
-
-        realhalf0len = realhalves.0.len();
-        realhalf1len = realhalves.1.len();
-    } //borrow from realhalves and scratchhalves expires
-
-    let mut realpointerleft = 0;
-    let mut realpointerright = 0;
-    let mut scratchpointer = 0;
-
-
-    //merge
-    while (realpointerleft < realhalf0len) && (realpointerright < realhalf1len) {
-
-        if (*real)[realpointerleft] <= (*real)[realhalf0len+realpointerright]{
-            (*scratch)[scratchpointer] = (*real)[realpointerleft];
-            realpointerleft +=1;
-        }else{
-            (*scratch)[scratchpointer] = (*real)[realhalf0len+realpointerright];
-            //(*scratch)[realhalf0len+realpointerright] = (*real)[realpointerleft];
-            realpointerright+=1;
-        }
-        scratchpointer+=1;
-    }
-
-
-    //copy remainder
-    while realpointerleft < realhalf0len {
-        (*scratch)[scratchpointer] = (*real)[realpointerleft];
-        realpointerleft+=1;
-        scratchpointer+=1;
-    }
-
-    while realpointerright < realhalf1len {
-        (*scratch) [scratchpointer] = (*real)[realhalf0len+realpointerright];
-        realpointerright+=1;
-        scratchpointer+=1;
-    }
-
-    scratchpointer = 0;
-    while scratchpointer<realhalf0len+realhalf1len{
-        (*real)[scratchpointer] = (*scratch)[scratchpointer];
-        scratchpointer+=1;
-    }
-
-
-}
