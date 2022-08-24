@@ -3,7 +3,10 @@ use std::fs::File;
 use std::io::prelude::*;
 
 mod sorts;
+mod searches;
 use crate::sorts::mergesort::mergesort;
+use crate::sorts::bubblesort::bubblesort;
+use crate::searches::binarysearch::binarysearch;
 
 fn main() {
     println!("Hello, mergesort!");
@@ -14,24 +17,12 @@ fn main() {
     let outputfile = read_vec(&mut vector);
     println!("Vector read: {:?}",vector);
 
-    let mut scratchvec:Vec<i64> = Vec::new();
-    scratchvec.clone_from(&vector);
-
-    mergesort(vector.as_mut_slice(),scratchvec.as_mut_slice());
+    mergesort(vector.as_mut());
+    bubblesort(vector.as_mut());
+    binarysearch(&vector, 54);
 
     println!("Vector Sorted: {:?}",vector);
     println!("Output File: {:?}",outputfile);
-/*
-    let mut counter = 0;
-    while counter<real.len(){
-        print!("{:?},",real[counter]);
-        if counter%10 == 0{
-            print!("\n")
-        }
-        counter+=1;
-    }
-*/
-
 }
 
 /*
